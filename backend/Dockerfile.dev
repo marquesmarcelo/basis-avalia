@@ -3,7 +3,7 @@
 # O código entra via volume montado (./backend:/app), não copiado aqui.
 # air detecta mudanças em .go e recompila automaticamente dentro do container.
 
-FROM golang:1.26-alpine
+FROM golang:1.27-alpine
 WORKDIR /app
 
 # Usuário com uid/gid 1000 — mesmo uid do desenvolvedor no host, para que
