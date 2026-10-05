@@ -3,7 +3,7 @@
   "private": true,
   "devDependencies": {
     "@commitlint/cli": "^19",
-    "@commitlint/config-conventional": "^19",
+    "@commitlint/config-conventional": "^21",
     "husky": "^9"
   },
   "scripts": {
