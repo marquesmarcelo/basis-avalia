@@ -1,0 +1,31 @@
+# Dockerfile.dev — backend Go + Gin
+# Usado APENAS pelo docker-compose.dev.yml — nunca em produção.
+# O código entra via volume montado (./backend:/app), não copiado aqui.
+# air detecta mudanças em .go e recompila automaticamente dentro do container.
+
+FROM golang:1.26-alpine
+WORKDIR /app
+
+# Usuário com uid/gid 1000 — mesmo uid do desenvolvedor no host, para que
+# os artefatos gerados dentro do container (tmp/ do air, cache de módulo)
+# não fiquem com dono root no volume montado.
+RUN adduser -D -u 1000 gouser
+ENV HOME=/home/gouser
+ENV GOPATH=/home/gouser/go
+ENV GOCACHE=/home/gouser/.cache/go-build
+ENV PATH="/home/gouser/go/bin:${PATH}"
+# Pré-criar /app/tmp (vira volume anônimo no docker-compose.dev.yml) com
+# dono "gouser" ANTES de trocar de usuário — um volume anônimo herda a
+# permissão do diretório da imagem no momento em que é criado; sem isso,
+# o Docker cria o mountpoint como root e o `air` falha ao escrever o
+# binário recompilado.
+RUN mkdir -p /app/tmp && chown -R gouser:gouser /app
+USER gouser
+
+RUN go install github.com/air-verse/air@latest
+# CLI do golang-migrate — usada pelo serviço "test" do docker-compose.dev.yml
+# para aplicar as migrations no banco de teste antes de rodar `go test`.
+RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+EXPOSE 3001
+CMD ["air", "-c", ".air.toml"]

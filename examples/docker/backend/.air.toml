@@ -7,6 +7,13 @@ bin = "tmp/server"
 include_ext = ["go", "tpl", "tmpl", "html"]
 exclude_dir = ["tmp", "vendor", "testdata"]
 delay = 1000
+# send_interrupt + kill_delay: sem isto, um rebuild pode deixar o processo
+# antigo vivo e ainda escutando a porta enquanto o novo falha com "address
+# already in use" — toda mudança de código fica invisível até reiniciar o
+# container à mão. SIGINT dá ao processo antigo a chance de liberar a
+# porta antes do SIGKILL que vem depois do kill_delay.
+send_interrupt = true
+kill_delay = "2s"
 
 [log]
 time = false

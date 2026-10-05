@@ -1,0 +1,3694 @@
+basePath: /
+definitions:
+  http.AdministradorAtualizarRequest:
+    properties:
+      email:
+        type: string
+      nome:
+        type: string
+      versao:
+        type: integer
+    type: object
+  http.AdministradorRequest:
+    properties:
+      email:
+        type: string
+      nome:
+        type: string
+      senha:
+        type: string
+    type: object
+  http.AlterarSenhaRequest:
+    properties:
+      senha_atual:
+        type: string
+      senha_nova:
+        type: string
+    type: object
+  http.AnexoResponse:
+    properties:
+      criado_em:
+        type: string
+      hash_sha256:
+        type: string
+      id:
+        type: string
+      nome_original:
+        type: string
+      tamanho_bytes:
+        type: integer
+      tipo:
+        type: string
+    type: object
+  http.AprovacaoResponse:
+    properties:
+      data:
+        type: string
+      orgao:
+        type: string
+    type: object
+  http.CandidatoResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      nome:
+        type: string
+      perfis:
+        items:
+          type: string
+        type: array
+    type: object
+  http.ContextoDeSessaoResponse:
+    properties:
+      cursos_coordenados:
+        type: integer
+      email:
+        type: string
+      id:
+        type: string
+      instituicao:
+        $ref: '#/definitions/http.InstituicaoResumoResponse'
+      nome:
+        type: string
+      perfis:
+        items:
+          type: string
+        type: array
+      perfis_derivados:
+        items:
+          type: string
+        type: array
+      perfis_rotulos:
+        items:
+          type: string
+        type: array
+      permissoes:
+        items:
+          type: string
+        type: array
+      senha_provisoria:
+        type: boolean
+    type: object
+  http.CoordenadorDaDesignacaoResponse:
+    properties:
+      id:
+        type: string
+      nome:
+        type: string
+    type: object
+  http.CoordenadorDoCursoResponse:
+    properties:
+      data_fim:
+        type: string
+      id:
+        type: string
+      nome:
+        type: string
+      tambem_pesquisador_institucional:
+        type: boolean
+    type: object
+  http.CopiaEmLoteResponse:
+    properties:
+      criados:
+        type: integer
+      pulados:
+        items:
+          $ref: '#/definitions/http.CursoPuladoResponse'
+        type: array
+    type: object
+  http.CursoEmbutidoResponse:
+    properties:
+      codigo_emec:
+        type: string
+      grau:
+        type: string
+      id:
+        type: string
+      modalidade:
+        type: string
+      nome:
+        type: string
+      vago:
+        type: boolean
+    type: object
+  http.CursoPuladoResponse:
+    properties:
+      curso:
+        $ref: '#/definitions/http.CursoEmbutidoResponse'
+      motivo:
+        type: string
+    type: object
+  http.CursoResponse:
+    properties:
+      atualizado_em:
+        type: string
+      codigo_emec:
+        type: string
+      coordenador:
+        $ref: '#/definitions/http.CoordenadorDoCursoResponse'
+      criado_em:
+        type: string
+      grau:
+        type: string
+      id:
+        type: string
+      modalidade:
+        type: string
+      nome:
+        type: string
+      plano_do_periodo:
+        description: |-
+          PlanoDoPeriodo — só preenchido em GET /cursos (T-115); nil nas
+          respostas de curso único (design.md §5.5: campo de grid, não de
+          recurso individual).
+        type: string
+      situacao:
+        type: string
+      tem_vinculo:
+        type: boolean
+      versao:
+        type: integer
+    type: object
+  http.DesignacaoResponse:
+    properties:
+      autodesignacao:
+        type: boolean
+      coordenador:
+        $ref: '#/definitions/http.CoordenadorDaDesignacaoResponse'
+      data_fim:
+        type: string
+      data_inicio:
+        type: string
+      id:
+        type: string
+      outras_designacoes_vigentes:
+        type: integer
+      portaria:
+        type: string
+      situacao:
+        type: string
+      versao:
+        type: integer
+    type: object
+  http.DestinoDeCopiaResponse:
+    properties:
+      coordenador_nome:
+        type: string
+      curso_id:
+        type: string
+      curso_nome:
+        type: string
+      ja_tem_plano:
+        type: boolean
+      vago:
+        type: boolean
+    type: object
+  http.EntregaResponse:
+    properties:
+      anexos:
+        items:
+          $ref: '#/definitions/http.AnexoResponse'
+        type: array
+      avaliada_em:
+        type: string
+      avaliada_por_nome:
+        type: string
+      avaliador_era_coordenador:
+        type: boolean
+      coordenado_pelo_avaliador:
+        type: boolean
+      corrigida_por_nome:
+        type: string
+      criado_em:
+        type: string
+      curso_id:
+        type: string
+      curso_nome:
+        type: string
+      enviada_por_id:
+        type: string
+      enviada_por_nome:
+        type: string
+      id:
+        type: string
+      indicadores:
+        items:
+          $ref: '#/definitions/http.IndicadorEmbutidoResponse'
+        type: array
+      item_plano_id:
+        type: string
+      meta_nome:
+        type: string
+      motivo:
+        type: string
+      observacao:
+        type: string
+      pendencia_vista_em:
+        type: string
+      prazo_correcao_ate:
+        type: string
+      quantidade:
+        type: integer
+      rodadas:
+        type: integer
+      situacao:
+        type: string
+      versao:
+        type: integer
+    type: object
+  http.GrupoMinhasMetasResponse:
+    properties:
+      curso_id:
+        type: string
+      curso_nome:
+        type: string
+      itens:
+        items:
+          $ref: '#/definitions/http.ItemMinhasMetasResponse'
+        type: array
+    type: object
+  http.IndicadorEmbutidoResponse:
+    properties:
+      codigo:
+        type: string
+      escopo:
+        type: string
+      id:
+        type: string
+      nome:
+        type: string
+      referencia_instrumento:
+        type: string
+      situacao:
+        type: string
+    type: object
+  http.IndicadorPlataformaResponse:
+    properties:
+      atualizado_em:
+        type: string
+      codigo:
+        type: string
+      criado_em:
+        type: string
+      descricao:
+        type: string
+      escopo:
+        type: string
+      id:
+        type: string
+      metas:
+        type: integer
+      nome:
+        type: string
+      referencia_instrumento:
+        type: string
+      situacao:
+        type: string
+      versao:
+        type: integer
+    type: object
+  http.IndicadorResponse:
+    properties:
+      atualizado_em:
+        type: string
+      codigo:
+        type: string
+      criado_em:
+        type: string
+      descricao:
+        type: string
+      escopo:
+        type: string
+      id:
+        type: string
+      metas:
+        type: integer
+      nome:
+        type: string
+      referencia_instrumento:
+        type: string
+      situacao:
+        type: string
+      versao:
+        type: integer
+    type: object
+  http.IndicadorSugestaoResponse:
+    properties:
+      codigo:
+        type: string
+      escopo:
+        type: string
+      id:
+        type: string
+      nome:
+        type: string
+      referencia_instrumento:
+        type: string
+    type: object
+  http.InstituicaoPublicaResponse:
+    properties:
+      id:
+        type: string
+      nome:
+        type: string
+      sigla:
+        type: string
+    type: object
+  http.InstituicaoResponse:
+    properties:
+      atualizado_em:
+        type: string
+      codigo_emec:
+        type: string
+      criado_em:
+        type: string
+      id:
+        type: string
+      nome:
+        type: string
+      pesquisadores_ativos:
+        type: integer
+      sigla:
+        type: string
+      situacao:
+        type: string
+      versao:
+        type: integer
+    type: object
+  http.InstituicaoResumoResponse:
+    properties:
+      id:
+        type: string
+      nome:
+        type: string
+      sigla:
+        type: string
+    type: object
+  http.ItemMinhasMetasResponse:
+    properties:
+      aceitas:
+        type: integer
+      em_correcao:
+        type: integer
+      indicadores:
+        items:
+          $ref: '#/definitions/http.IndicadorEmbutidoResponse'
+        type: array
+      item_plano_id:
+        type: string
+      meta_nome:
+        type: string
+      pendentes:
+        type: integer
+      quantidade:
+        type: integer
+    type: object
+  http.ItemPlanoResponse:
+    properties:
+      id:
+        type: string
+      indicadores:
+        items:
+          $ref: '#/definitions/http.IndicadorEmbutidoResponse'
+        type: array
+      meta_id:
+        type: string
+      meta_nome:
+        type: string
+      quantidade:
+        type: integer
+      tem_entrega:
+        type: boolean
+      versao:
+        type: integer
+    type: object
+  http.LoginRequest:
+    properties:
+      email:
+        type: string
+      instituicao_id:
+        type: string
+      senha:
+        type: string
+    type: object
+  http.MetaResponse:
+    properties:
+      atualizado_em:
+        type: string
+      criado_em:
+        type: string
+      descricao:
+        type: string
+      id:
+        type: string
+      indicadores:
+        items:
+          $ref: '#/definitions/http.IndicadorEmbutidoResponse'
+        type: array
+      nome:
+        type: string
+      planos:
+        type: integer
+      quantidade_sugerida:
+        type: integer
+      situacao:
+        type: string
+      versao:
+        type: integer
+    type: object
+  http.MetaSugestaoResponse:
+    properties:
+      id:
+        type: string
+      indicadores:
+        items:
+          $ref: '#/definitions/http.IndicadorEmbutidoResponse'
+        type: array
+      nome:
+        type: string
+      quantidade_sugerida:
+        type: integer
+    type: object
+  http.PendenciasResponse:
+    properties:
+      pendencias_nao_vistas:
+        type: integer
+      pendentes_de_avaliacao:
+        type: integer
+    type: object
+  http.PeriodoEmbutidoResponse:
+    properties:
+      id:
+        type: string
+      nome:
+        type: string
+    type: object
+  http.PeriodoOpcaoResponse:
+    properties:
+      aberto:
+        type: boolean
+      data_fim:
+        type: string
+      id:
+        type: string
+      nome:
+        type: string
+    type: object
+  http.PeriodoResponse:
+    properties:
+      atualizado_em:
+        type: string
+      criado_em:
+        type: string
+      data_fim:
+        type: string
+      data_inicio:
+        type: string
+      id:
+        type: string
+      nome:
+        type: string
+      planos:
+        type: integer
+      situacao:
+        type: string
+      versao:
+        type: integer
+    type: object
+  http.PesquisadorAtualizarRequest:
+    properties:
+      email:
+        type: string
+      nome:
+        type: string
+      versao:
+        type: integer
+    type: object
+  http.PesquisadorRequest:
+    properties:
+      email:
+        type: string
+      nome:
+        type: string
+      senha:
+        type: string
+    type: object
+  http.PlanoResponse:
+    properties:
+      alinhamento_pdi:
+        type: string
+      alinhamento_ppc:
+        type: string
+      aprovacao:
+        $ref: '#/definitions/http.AprovacaoResponse'
+      atualizado_em:
+        type: string
+      coordenador_nome:
+        type: string
+      criado_em:
+        type: string
+      curso:
+        $ref: '#/definitions/http.CursoEmbutidoResponse'
+      descricao:
+        type: string
+      encerramento_motivo:
+        type: string
+      id:
+        type: string
+      itens:
+        items:
+          $ref: '#/definitions/http.ItemPlanoResponse'
+        type: array
+      metas:
+        type: integer
+      objetivo_geral:
+        type: string
+      periodo:
+        $ref: '#/definitions/http.PeriodoEmbutidoResponse'
+      resultados_esperados:
+        type: string
+      sem_aprovacao:
+        type: boolean
+      situacao:
+        type: string
+      tem_entrega:
+        type: boolean
+      total_exigido:
+        type: integer
+      ultimo_documento:
+        $ref: '#/definitions/http.UltimoDocumentoResponse'
+      versao:
+        type: integer
+    type: object
+  http.RedefinirSenhaRequest:
+    properties:
+      senha_nova:
+        type: string
+    type: object
+  http.UltimoDocumentoResponse:
+    properties:
+      gerado_em:
+        type: string
+      id:
+        type: string
+    type: object
+  http.UsuarioAtualizarRequest:
+    properties:
+      email:
+        type: string
+      nome:
+        type: string
+      perfis:
+        items:
+          type: string
+        type: array
+      versao:
+        type: integer
+    type: object
+  http.UsuarioRequest:
+    properties:
+      email:
+        type: string
+      nome:
+        type: string
+      perfis:
+        items:
+          type: string
+        type: array
+      senha:
+        type: string
+    type: object
+  http.UsuarioResponse:
+    properties:
+      atualizado_em:
+        type: string
+      criado_em:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      nome:
+        type: string
+      perfis:
+        items:
+          type: string
+        type: array
+      perfis_rotulos:
+        items:
+          type: string
+        type: array
+      senha_provisoria:
+        type: boolean
+      versao:
+        type: integer
+    type: object
+  http.VersaoResponse:
+    properties:
+      versao:
+        type: string
+    type: object
+  http.erroResposta:
+    properties:
+      campo:
+        type: string
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Autenticação, instituições e usuários com múltiplos perfis.
+  title: basis-avalia API
+  version: "1.0"
+paths:
+  /api/v1/administradores:
+    get:
+      description: 'Cada rota lista um universo diferente: usuários da própria instituição
+        de quem chama, pesquisadores institucionais de uma instituição específica,
+        ou administradores da plataforma.'
+      parameters:
+      - description: busca por nome ou e-mail
+        in: query
+        name: busca
+        type: string
+      - description: filtra por posse do perfil — só na rota de usuários
+        in: query
+        name: perfil
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: PARAMETRO_INVALIDO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar usuários, pesquisadores institucionais ou administradores
+      tags:
+      - usuarios
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dados do novo administrador
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.AdministradorRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.UsuarioResponse'
+        "400":
+          description: PAYLOAD_INVALIDO, SENHA_OBRIGATORIA ou SENHA_ACIMA_DO_LIMITE
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: EMAIL_DUPLICADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Criar administrador do sistema
+      tags:
+      - usuarios
+  /api/v1/administradores/{usuario_id}:
+    delete:
+      description: Deleção lógica (excluido_em) — nunca DELETE real. Recusada se for
+        o último Pesquisador Institucional ou o último Administrador do Sistema.
+      parameters:
+      - description: id da instituição — só na rota de pesquisadores
+        in: path
+        name: id
+        type: string
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA, AUTO_EXCLUSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: ULTIMO_PESQUISADOR_INSTITUCIONAL ou ULTIMO_ADMINISTRADOR_SISTEMA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir usuário, pesquisador institucional ou administrador
+      tags:
+      - usuarios
+    get:
+      parameters:
+      - description: id da instituição — só na rota de pesquisadores
+        in: path
+        name: id
+        type: string
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.UsuarioResponse'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar usuário, pesquisador institucional ou administrador por id
+      tags:
+      - usuarios
+    put:
+      consumes:
+      - application/json
+      description: 'Concorrência otimista via "versao": envie o valor recebido no
+        GET mais recente.'
+      parameters:
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      - description: Dados atualizados
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.AdministradorAtualizarRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.UsuarioResponse'
+        "400":
+          description: PAYLOAD_INVALIDO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: CONFLITO_DE_VERSAO, EMAIL_DUPLICADO ou ULTIMO_ADMINISTRADOR_SISTEMA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar administrador do sistema
+      tags:
+      - usuarios
+  /api/v1/administradores/{usuario_id}/senha:
+    post:
+      consumes:
+      - application/json
+      description: A senha nasce provisória (troca obrigatória no próximo acesso).
+        Redefinir a própria senha por este caminho é negado — use "Alterar minha senha".
+      parameters:
+      - description: id da instituição — só na rota de pesquisadores
+        in: path
+        name: id
+        type: string
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      - description: Nova senha provisória
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.RedefinirSenhaRequest'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: PAYLOAD_INVALIDO, SENHA_OBRIGATORIA ou SENHA_ACIMA_DO_LIMITE
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Redefinir a senha de outro usuário
+      tags:
+      - usuarios
+  /api/v1/anexos/{id}:
+    delete:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Remover anexo de uma entrega
+      tags:
+      - anexos
+  /api/v1/anexos/{id}/conteudo:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Baixar o conteúdo de um anexo
+      tags:
+      - anexos
+  /api/v1/auth/eu:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.ContextoDeSessaoResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Quem sou eu
+      tags:
+      - auth
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Credenciais
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.ContextoDeSessaoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Entrar
+      tags:
+      - auth
+  /api/v1/auth/logout:
+    post:
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Sair
+      tags:
+      - auth
+  /api/v1/auth/senha:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Senha atual e nova
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.AlterarSenhaRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.ContextoDeSessaoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Alterar a própria senha
+      tags:
+      - auth
+  /api/v1/avaliacoes:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar a fila de avaliação de entregas (Pesquisador Institucional)
+      tags:
+      - avaliacoes
+  /api/v1/cursos:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar cursos
+      tags:
+      - cursos
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.CursoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Cadastrar curso
+      tags:
+      - cursos
+  /api/v1/cursos/{id}:
+    delete:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir curso
+      tags:
+      - cursos
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.CursoResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar curso por ID
+      tags:
+      - cursos
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.CursoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar curso
+      tags:
+      - cursos
+  /api/v1/cursos/{id}/designacoes:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar designações de um curso
+      tags:
+      - designacoes
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.DesignacaoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Designar coordenador
+      tags:
+      - designacoes
+  /api/v1/cursos/{id}/situacao:
+    patch:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.CursoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Inativar ou reativar curso
+      tags:
+      - cursos
+  /api/v1/designacoes/{id}:
+    delete:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir designação
+      tags:
+      - designacoes
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.DesignacaoResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar designação por ID
+      tags:
+      - designacoes
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.DesignacaoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar designação
+      tags:
+      - designacoes
+  /api/v1/designacoes/candidatos:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.CandidatoResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Autocomplete de candidato a coordenador
+      tags:
+      - designacoes
+  /api/v1/documentos/{id}/conteudo:
+    get:
+      produces:
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Baixar um documento já gerado
+      tags:
+      - documentos
+  /api/v1/entregas/{id}:
+    delete:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir entrega não aceita
+      tags:
+      - entregas
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.EntregaResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar entrega por ID
+      tags:
+      - entregas
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.EntregaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Corrigir e reenviar entrega recusada
+      tags:
+      - entregas
+  /api/v1/entregas/{id}/anexos:
+    post:
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/http.AnexoResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Adicionar anexo a uma entrega em correção
+      tags:
+      - anexos
+  /api/v1/entregas/{id}/avaliacao:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.EntregaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Aceitar ou recusar uma entrega
+      tags:
+      - avaliacoes
+  /api/v1/entregas/{id}/desfazer-aceitacao:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.EntregaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Desfazer a aceitação de uma entrega
+      tags:
+      - avaliacoes
+  /api/v1/entregas/{id}/pendencia-vista:
+    post:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Marcar a pendência de recusa como vista
+      tags:
+      - entregas
+  /api/v1/indicadores:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar indicadores (catálogo do INEP + próprios)
+      tags:
+      - indicadores
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.IndicadorResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Cadastrar indicador próprio
+      tags:
+      - indicadores
+  /api/v1/indicadores/{id}:
+    delete:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir indicador próprio
+      tags:
+      - indicadores
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.IndicadorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar indicador por ID
+      tags:
+      - indicadores
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.IndicadorResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar indicador próprio
+      tags:
+      - indicadores
+  /api/v1/indicadores/{id}/situacao:
+    patch:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.IndicadorResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Inativar ou reativar indicador próprio
+      tags:
+      - indicadores
+  /api/v1/indicadores/sugestoes:
+    get:
+      description: Mistura os dois escopos, só ativos, limitado a 20. Sem criação
+        inline.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.IndicadorSugestaoResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Autocomplete de indicador
+      tags:
+      - indicadores
+  /api/v1/instituicoes:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar instituições
+      tags:
+      - instituicoes
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.InstituicaoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Criar instituição
+      tags:
+      - instituicoes
+  /api/v1/instituicoes/{id}:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.InstituicaoResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar instituição por ID
+      tags:
+      - instituicoes
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.InstituicaoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar instituição
+      tags:
+      - instituicoes
+  /api/v1/instituicoes/{id}/pesquisadores:
+    get:
+      description: 'Cada rota lista um universo diferente: usuários da própria instituição
+        de quem chama, pesquisadores institucionais de uma instituição específica,
+        ou administradores da plataforma.'
+      parameters:
+      - description: id da instituição — só na rota de pesquisadores
+        in: path
+        name: id
+        type: string
+      - description: busca por nome ou e-mail
+        in: query
+        name: busca
+        type: string
+      - description: filtra por posse do perfil — só na rota de usuários
+        in: query
+        name: perfil
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: PARAMETRO_INVALIDO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar usuários, pesquisadores institucionais ou administradores
+      tags:
+      - usuarios
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: id da instituição
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Dados do novo pesquisador
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.PesquisadorRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.UsuarioResponse'
+        "400":
+          description: PAYLOAD_INVALIDO, SENHA_OBRIGATORIA ou SENHA_ACIMA_DO_LIMITE
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: EMAIL_DUPLICADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Criar pesquisador institucional de uma instituição
+      tags:
+      - usuarios
+  /api/v1/instituicoes/{id}/pesquisadores/{usuario_id}:
+    delete:
+      description: Deleção lógica (excluido_em) — nunca DELETE real. Recusada se for
+        o último Pesquisador Institucional ou o último Administrador do Sistema.
+      parameters:
+      - description: id da instituição — só na rota de pesquisadores
+        in: path
+        name: id
+        type: string
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA, AUTO_EXCLUSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: ULTIMO_PESQUISADOR_INSTITUCIONAL ou ULTIMO_ADMINISTRADOR_SISTEMA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir usuário, pesquisador institucional ou administrador
+      tags:
+      - usuarios
+    get:
+      parameters:
+      - description: id da instituição — só na rota de pesquisadores
+        in: path
+        name: id
+        type: string
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.UsuarioResponse'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar usuário, pesquisador institucional ou administrador por id
+      tags:
+      - usuarios
+    put:
+      consumes:
+      - application/json
+      description: 'Concorrência otimista via "versao": envie o valor recebido no
+        GET mais recente.'
+      parameters:
+      - description: id da instituição
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      - description: Dados atualizados
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.PesquisadorAtualizarRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.UsuarioResponse'
+        "400":
+          description: PAYLOAD_INVALIDO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: CONFLITO_DE_VERSAO, EMAIL_DUPLICADO ou ULTIMO_PESQUISADOR_INSTITUCIONAL
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar pesquisador institucional de uma instituição
+      tags:
+      - usuarios
+  /api/v1/instituicoes/{id}/pesquisadores/{usuario_id}/senha:
+    post:
+      consumes:
+      - application/json
+      description: A senha nasce provisória (troca obrigatória no próximo acesso).
+        Redefinir a própria senha por este caminho é negado — use "Alterar minha senha".
+      parameters:
+      - description: id da instituição — só na rota de pesquisadores
+        in: path
+        name: id
+        type: string
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      - description: Nova senha provisória
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.RedefinirSenhaRequest'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: PAYLOAD_INVALIDO, SENHA_OBRIGATORIA ou SENHA_ACIMA_DO_LIMITE
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Redefinir a senha de outro usuário
+      tags:
+      - usuarios
+  /api/v1/instituicoes/{id}/situacao:
+    patch:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.InstituicaoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Ativar ou inativar instituição
+      tags:
+      - instituicoes
+  /api/v1/itens/{itemId}/entregas:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar entregas de um item do plano
+      tags:
+      - entregas
+    post:
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.EntregaResponse'
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.EntregaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Registrar entrega de comprovante de meta
+      tags:
+      - entregas
+  /api/v1/metas:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar metas
+      tags:
+      - metas
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.MetaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Cadastrar meta
+      tags:
+      - metas
+  /api/v1/metas/{id}:
+    delete:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir meta
+      tags:
+      - metas
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.MetaResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar meta por ID
+      tags:
+      - metas
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.MetaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar meta
+      tags:
+      - metas
+  /api/v1/metas/{id}/situacao:
+    patch:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.MetaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Inativar ou reativar meta
+      tags:
+      - metas
+  /api/v1/metas/pendencias:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PendenciasResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Contar as pendências de avaliação e de correção (os dois badges do
+        menu)
+      tags:
+      - metas
+  /api/v1/metas/sugestoes:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.MetaSugestaoResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Autocomplete de meta
+      tags:
+      - metas
+  /api/v1/meus-cursos:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.CursoResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Cursos que o coordenador autenticado coordena hoje
+      tags:
+      - cursos
+  /api/v1/meus-planos:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar os planos dos cursos que o coordenador coordena
+      tags:
+      - planos
+  /api/v1/meus-planos/{id}:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar plano de um curso da carteira do coordenador
+      tags:
+      - planos
+  /api/v1/meus-planos/{id}/documentos:
+    post:
+      produces:
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: file
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Gerar o documento .docx de um plano da carteira (Coordenador)
+      tags:
+      - documentos
+  /api/v1/minhas-metas:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.GrupoMinhasMetasResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar as metas dos cursos que o coordenador coordena (única tela sem
+        "Pesquisar")
+      tags:
+      - entregas
+  /api/v1/minhas-metas/periodos:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.PeriodoOpcaoResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar períodos para o seletor de "Minhas metas"
+      tags:
+      - entregas
+  /api/v1/periodos:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar períodos
+      tags:
+      - periodos
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.PeriodoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Cadastrar período
+      tags:
+      - periodos
+  /api/v1/periodos/{id}:
+    delete:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir período
+      tags:
+      - periodos
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PeriodoResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar período por ID
+      tags:
+      - periodos
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PeriodoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar período
+      tags:
+      - periodos
+  /api/v1/planos:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar planos da instituição
+      tags:
+      - planos
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Cadastrar plano de ação curso/coordenador
+      tags:
+      - planos
+  /api/v1/planos/{id}:
+    delete:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir plano em rascunho
+      tags:
+      - planos
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar plano por ID
+      tags:
+      - planos
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar dados e aprovação do plano
+      tags:
+      - planos
+  /api/v1/planos/{id}/copias:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.CopiaEmLoteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Copiar plano para vários cursos
+      tags:
+      - planos
+  /api/v1/planos/{id}/despublicar:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Despublicar plano (vigente -> rascunho)
+      tags:
+      - planos
+  /api/v1/planos/{id}/destinos-copia:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.DestinoDeCopiaResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar cursos elegíveis para cópia em lote do plano
+      tags:
+      - planos
+  /api/v1/planos/{id}/documentos:
+    post:
+      produces:
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: file
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Gerar o documento .docx do plano (Pesquisador Institucional)
+      tags:
+      - documentos
+  /api/v1/planos/{id}/encerrar:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Encerrar plano antecipadamente
+      tags:
+      - planos
+  /api/v1/planos/{id}/itens:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Adicionar meta ao plano
+      tags:
+      - itens-do-plano
+  /api/v1/planos/{id}/itens/{item_id}:
+    delete:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Remover meta do plano
+      tags:
+      - itens-do-plano
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Alterar a quantidade de um item do plano
+      tags:
+      - itens-do-plano
+  /api/v1/planos/{id}/publicar:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Publicar plano (rascunho -> vigente)
+      tags:
+      - planos
+  /api/v1/planos/{id}/reabrir:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.PlanoResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Reabrir plano encerrado antecipadamente
+      tags:
+      - planos
+  /api/v1/plataforma/indicadores:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar o catálogo de indicadores do INEP
+      tags:
+      - indicadores-plataforma
+    post:
+      consumes:
+      - application/json
+      description: Catálogo único da instalação — vale para todas as instituições
+        imediatamente.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.IndicadorPlataformaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Cadastrar indicador do INEP
+      tags:
+      - indicadores-plataforma
+  /api/v1/plataforma/indicadores/{id}:
+    delete:
+      description: Bloqueado enquanto qualquer instituição o referenciar em meta.
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir indicador do INEP
+      tags:
+      - indicadores-plataforma
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.IndicadorPlataformaResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar indicador do INEP por ID
+      tags:
+      - indicadores-plataforma
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.IndicadorPlataformaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar indicador do INEP
+      tags:
+      - indicadores-plataforma
+  /api/v1/plataforma/indicadores/{id}/situacao:
+    patch:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.IndicadorPlataformaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Inativar ou reativar indicador do INEP
+      tags:
+      - indicadores-plataforma
+  /api/v1/publico/instituicoes:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.InstituicaoPublicaResponse'
+            type: array
+      summary: Instituições disponíveis para login
+      tags:
+      - publico
+  /api/v1/relatorios/desempenho:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Relatório de desempenho por item de plano
+      tags:
+      - relatorios
+  /api/v1/relatorios/desempenho/exportacao:
+    get:
+      produces:
+      - text/csv
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Exportar o relatório de desempenho em CSV
+      tags:
+      - relatorios
+  /api/v1/relatorios/desempenho/por-curso:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Cumprimento de metas agregado por curso (gráfico)
+      tags:
+      - relatorios
+  /api/v1/usuarios:
+    get:
+      description: 'Cada rota lista um universo diferente: usuários da própria instituição
+        de quem chama, pesquisadores institucionais de uma instituição específica,
+        ou administradores da plataforma.'
+      parameters:
+      - description: busca por nome ou e-mail
+        in: query
+        name: busca
+        type: string
+      - description: filtra por posse do perfil — só na rota de usuários
+        in: query
+        name: perfil
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: PARAMETRO_INVALIDO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Listar usuários, pesquisadores institucionais ou administradores
+      tags:
+      - usuarios
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dados do novo usuário
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.UsuarioRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.UsuarioResponse'
+        "400":
+          description: PAYLOAD_INVALIDO, PERFIL_INVALIDO, COMBINACAO_DE_PERFIS_INVALIDA,
+            SENHA_OBRIGATORIA ou SENHA_ACIMA_DO_LIMITE
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: EMAIL_DUPLICADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Criar usuário na própria instituição
+      tags:
+      - usuarios
+  /api/v1/usuarios/{usuario_id}:
+    delete:
+      description: Deleção lógica (excluido_em) — nunca DELETE real. Recusada se for
+        o último Pesquisador Institucional ou o último Administrador do Sistema.
+      parameters:
+      - description: id da instituição — só na rota de pesquisadores
+        in: path
+        name: id
+        type: string
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA, AUTO_EXCLUSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: ULTIMO_PESQUISADOR_INSTITUCIONAL ou ULTIMO_ADMINISTRADOR_SISTEMA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Excluir usuário, pesquisador institucional ou administrador
+      tags:
+      - usuarios
+    get:
+      parameters:
+      - description: id da instituição — só na rota de pesquisadores
+        in: path
+        name: id
+        type: string
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.UsuarioResponse'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Buscar usuário, pesquisador institucional ou administrador por id
+      tags:
+      - usuarios
+    put:
+      consumes:
+      - application/json
+      description: 'Concorrência otimista via "versao": envie o valor recebido no
+        GET mais recente.'
+      parameters:
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      - description: Dados atualizados
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.UsuarioAtualizarRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.UsuarioResponse'
+        "400":
+          description: PAYLOAD_INVALIDO, PERFIL_INVALIDO ou COMBINACAO_DE_PERFIS_INVALIDA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA, ALTERACAO_DOS_PROPRIOS_PERFIS_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "409":
+          description: CONFLITO_DE_VERSAO, EMAIL_DUPLICADO, ULTIMO_PESQUISADOR_INSTITUCIONAL
+            ou ULTIMO_ADMINISTRADOR_SISTEMA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Atualizar usuário da própria instituição
+      tags:
+      - usuarios
+  /api/v1/usuarios/{usuario_id}/senha:
+    post:
+      consumes:
+      - application/json
+      description: A senha nasce provisória (troca obrigatória no próximo acesso).
+        Redefinir a própria senha por este caminho é negado — use "Alterar minha senha".
+      parameters:
+      - description: id da instituição — só na rota de pesquisadores
+        in: path
+        name: id
+        type: string
+      - description: id do usuário
+        in: path
+        name: usuario_id
+        required: true
+        type: string
+      - description: Nova senha provisória
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.RedefinirSenhaRequest'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: PAYLOAD_INVALIDO, SENHA_OBRIGATORIA ou SENHA_ACIMA_DO_LIMITE
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "401":
+          description: SESSAO_EXPIRADA, CONTA_EXCLUIDA ou INSTITUICAO_INATIVA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "403":
+          description: PERMISSAO_NEGADA ou SENHA_PROVISORIA
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+        "404":
+          description: NAO_ENCONTRADO
+          schema:
+            $ref: '#/definitions/http.erroResposta'
+      summary: Redefinir a senha de outro usuário
+      tags:
+      - usuarios
+  /version:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.VersaoResponse'
+      summary: Versão da aplicação em execução
+      tags:
+      - sistema
+swagger: "2.0"

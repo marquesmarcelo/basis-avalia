@@ -1,0 +1,22 @@
+# Dockerfile.dev — frontend Next.js
+# Usado APENAS pelo docker-compose.dev.yml — nunca em produção.
+# O código entra via volume montado (./frontend:/app), não copiado aqui.
+# `next dev` já tem HMR nativo — não precisa de watcher externo.
+
+FROM node:22-alpine
+WORKDIR /app
+# Pré-criar os diretórios que viram volume anônimo (node_modules, .next) e
+# ajustar dono para "node" (uid/gid 1000) ANTES de trocar de usuário — um
+# volume anônimo herda a permissão do diretório da imagem no momento em
+# que é criado; sem isso, o Docker cria o mountpoint como root e o
+# `npm install` falha com EACCES.
+RUN mkdir -p /app/node_modules /app/.next && chown -R node:node /app
+# Imagem node:alpine já vem com o usuário "node" (uid/gid 1000) — mesmo
+# uid do desenvolvedor no host, então node_modules/.next gerados dentro
+# do container não ficam com dono root no volume montado.
+USER node
+EXPOSE 3000
+# npm install na inicialização garante módulos atualizados sem rebuild da
+# imagem quando o package.json muda. node_modules e .next ficam em volumes
+# nomeados (ver docker-compose.dev.yml) — nunca sobrescritos pelo bind mount.
+CMD ["sh", "-c", "npm install && npm run dev"]

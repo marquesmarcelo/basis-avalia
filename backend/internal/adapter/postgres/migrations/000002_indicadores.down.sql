@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS meta_indicador;
+DROP TABLE IF EXISTS meta;
+DROP TABLE IF EXISTS indicador;

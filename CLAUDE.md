@@ -2726,6 +2726,8 @@ lint-backend    → golangci-lint / flake8 / checkstyle / phpstan (por stack)
 lint-frontend   → biome ci . (JS/TS: lint + format)
 knip            → npx knip (código morto)
 arch-contract   → npx depcruise (contratos arquiteturais)
+comentarios-fe  → npm run verificar-comentarios (zero comentário em .ts/.tsx
+                  autoral, exceto diretiva de lint/tipo e components/ui/**)
 docs-mermaid    → node examples/quality/validar-mermaid.mjs (diagramas renderizam)
 a11y            → npx playwright test e2e/acessibilidade/ (axe-core, WCAG 2.2 AA)
 test            → testes unitários + integração

@@ -1,0 +1,103 @@
+# Ambiente de produção — build completo (multi-stage), sem volume de
+# código, sem APP_ENV=development, sem CORS permissiva.
+#
+#   docker compose -f docker-compose.yaml up -d --build
+#
+# Nunca combinar com docker-compose.dev.yml — ver CLAUDE.md,
+# "Docker Compose: dois ambientes, comportamentos distintos".
+#
+# MinIO e SMTP são infraestrutura externa em produção (MinIO self-hosted ou
+# AWS S3; SMTP corporativo/SendGrid/SES) — não entram como container aqui,
+# só como variável de ambiente do backend, apontando para o endpoint real.
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    image: migrate/migrate:latest
+    volumes:
+      - ./backend/internal/adapter/postgres/migrations:/migrations
+    command: ["-path", "/migrations", "-database", "${DATABASE_URL}", "up"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      APP_VERSION: ${APP_VERSION:-0.0.0-dev}
+      PORT: "3001"
+      ADMIN_PORT: "9090"
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      JWT_SECRET: ${JWT_SECRET}
+      ARGON2_CONCORRENCIA: ${ARGON2_CONCORRENCIA:-4}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL}
+      SEED_ADMIN_SENHA: ${SEED_ADMIN_SENHA}
+      SEED_ADMIN_NOME: ${SEED_ADMIN_NOME}
+      SYSLOG_SERVER: ${SYSLOG_SERVER}
+      SYSLOG_PROTOCOL: ${SYSLOG_PROTOCOL:-tcp}
+      SYSLOG_APP_NAME: ${SYSLOG_APP_NAME:-basis-avalia}
+      S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_BUCKET: ${S3_BUCKET}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_TLS: ${SMTP_TLS:-true}
+      RELE_HABILITADO: ${RELE_HABILITADO:-true}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    ports:
+      - "3000:3000"
+    environment:
+      # O estágio final do Dockerfile (runner) não herda o ENV do estágio
+      # de build — sem isto, proxy.ts nunca vê APP_ENV=production em
+      # runtime e aplicaria o CSP relaxado de desenvolvimento.
+      APP_ENV: production
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

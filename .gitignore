@@ -5,8 +5,9 @@
 
 # Ambiente
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+*.log
 
 # Dependências
 node_modules/

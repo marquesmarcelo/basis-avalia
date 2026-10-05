@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS designacao;
+DROP TABLE IF EXISTS curso;

@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS idempotencia;
+DROP TABLE IF EXISTS anexo;
+DROP TABLE IF EXISTS entrega;

@@ -1,0 +1,466 @@
+# Ambiente de desenvolvimento local — arquivo autônomo (não é overlay):
+# sobe tudo que a aplicação precisa, com hot-reload e sem exigir rebuild
+# de imagem para ver mudança de código.
+#
+#   docker compose -f docker-compose.dev.yml up -d
+#
+# Quando o go.mod ou o package.json mudar (nova dependência), reconstrua
+# a imagem do serviço afetado:
+#
+#   docker compose -f docker-compose.dev.yml build backend
+#   docker compose -f docker-compose.dev.yml build frontend
+#
+# backend-e2e roda a imagem de PRODUÇÃO (build multi-stage, sem hot-reload
+# — ver comentário no serviço). Depois de qualquer mudança em backend/,
+# reconstrua antes de rodar a suíte E2E:
+#
+#   docker compose -f docker-compose.dev.yml build backend-e2e
+#
+# Rodar migration/seed/teste manualmente:
+#
+#   docker compose -f docker-compose.dev.yml run --rm backend go mod tidy
+#   docker compose -f docker-compose.dev.yml run --rm backend go test ./... -cover
+#
+# Para produção, use docker-compose.yaml — nunca misture os dois arquivos.
+#
+# MinIO (armazenamento de objetos) e Mailpit (captura de e-mail) — ver
+# project.config.md e specs/_fundacao-metas.md §9. O bucket é criado pelo
+# serviço `minio-init` (mesmo padrão do `migrate`: um tiro,
+# service_completed_successfully, idempotente).
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_TEST_DB: ${POSTGRES_TEST_DB}
+      POSTGRES_E2E_DB: ${POSTGRES_E2E_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-test-db.sh:/docker-entrypoint-initdb.d/init-test-db.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Armazenamento de objetos (documento .docx de plano-metas-curso e anexo
+  # de comprovante de metas-coordenacao — nenhum arquivo em disco local do
+  # container, ver CLAUDE.md "Design para múltiplos containers"). A API
+  # nunca é usada pelo navegador diretamente: o download passa sempre por
+  # rota autenticada do backend (ver specs/_fundacao-metas.md §9).
+  #
+  # DESVIO REGISTRADO — leia antes de mexer aqui: a imagem é
+  # `zenko/cloudserver` (Scality CloudServer), não o binário oficial da
+  # MinIO. Motivo, verificado nesta rodada de provisionamento: a partir de
+  # 2025 a MinIO parou de distribuir imagem/binário para pull anônimo —
+  # `minio/minio` e `minio/mc` foram removidos do Docker Hub (404),
+  # `quay.io/minio/*` exige login (401) e `dl.min.io` devolve 410 Gone.
+  # CloudServer é AGPLv3, S3-API-compatível (o SDK AWS que o backend usa
+  # não muda) — testado nesta rodada: bucket criado, objeto gravado e lido
+  # de volta com sucesso via `aws s3 cp`. **Diferença real:** não tem
+  # console web (porta 9001 não existe aqui) e escuta na porta 8000, não
+  # 9000 — publicada em 9000 no host só para manter a convenção de acesso
+  # externo; internamente o backend fala com `minio:8000`. Se o console for
+  # indispensável, é decisão do arquiteto trocar de imagem, não algo que
+  # este provisionamento resolve sozinho.
+  minio:
+    image: zenko/cloudserver:latest
+    environment:
+      SCALITY_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
+      SCALITY_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
+      REMOTE_MANAGEMENT_DISABLE: "1"
+      # CloudServer só aceita requisição cujo Host header está na allowlist
+      # `restEndpoints` do config.json — a entrypoint da imagem lê ENDPOINT
+      # e adiciona o hostname dinamicamente (senão: "InvalidURI ... Check
+      # your restEndpoints configuration", confirmado nesta rodada).
+      ENDPOINT: minio
+    ports:
+      - "9000:8000"
+    volumes:
+      - minio_dev_data:/usr/src/app/localData
+      - minio_dev_metadata:/usr/src/app/localMetadata
+    healthcheck:
+      # Sem `-f`: uma resposta HTTP (mesmo 403, sem assinatura AWS) já prova
+      # que o servidor está de pé — só a ausência de resposta é falha.
+      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://127.0.0.1:8000/"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # Cria o bucket na subida — um tiro, mesmo padrão do `migrate`: roda,
+  # termina com sucesso, backend só sobe depois. `s3 mb` idempotente na
+  # prática: se o bucket já existe, o `head-bucket` seguinte confirma que
+  # está tudo certo mesmo assim; qualquer outro erro real interrompe o
+  # script (`set -e`) e o serviço fica marcado como falho.
+  minio-init:
+    image: amazon/aws-cli:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
+      AWS_DEFAULT_REGION: us-east-1
+      S3_BUCKET: ${S3_BUCKET}
+    entrypoint: []
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        aws --endpoint-url http://minio:8000 s3 mb "s3://$$S3_BUCKET" || true
+        aws --endpoint-url http://minio:8000 s3api head-bucket --bucket "$$S3_BUCKET"
+    restart: "no"
+
+  # Captura e-mail em desenvolvimento, sem entregar nada para fora (ver
+  # metas-coordenacao, recusa de entrega). Sem volume: dados de teste
+  # descartáveis, perda no restart é aceitável.
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8025/readyz"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  # Aplica as migrations no banco de desenvolvimento antes do backend subir.
+  migrate:
+    image: migrate/migrate:latest
+    volumes:
+      - ./backend/internal/adapter/postgres/migrations:/migrations
+    command: ["-path", "/migrations", "-database", "${DATABASE_URL}", "up"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  # Aplica as migrations no banco de TESTE (isolado, ver CLAUDE.md) e roda
+  # a suíte apenas quando RUN_TESTS=true — padrão obrigatório do projeto:
+  # RUN_TESTS separa "aplicar migration" de "rodar teste".
+  test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - /app/tmp
+    environment:
+      RUN_TESTS: ${RUN_TESTS:-false}
+      DATABASE_URL: ${DATABASE_URL_TEST}
+      DATABASE_URL_TEST: ${DATABASE_URL_TEST}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        migrate -path ./internal/adapter/postgres/migrations -database "$$DATABASE_URL" up
+        if [ "$$RUN_TESTS" = "true" ]; then
+          go test ./... -cover
+        else
+          echo "RUN_TESTS=false — migrations do banco de teste aplicadas, testes pulados"
+        fi
+    restart: "no"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - /app/tmp
+    environment:
+      APP_ENV: development
+      APP_VERSION: ${APP_VERSION:-0.0.0-dev}
+      PORT: "3001"
+      ADMIN_PORT: "9090"
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      JWT_SECRET: ${JWT_SECRET}
+      ARGON2_CONCORRENCIA: ${ARGON2_CONCORRENCIA:-4}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL}
+      SEED_ADMIN_SENHA: ${SEED_ADMIN_SENHA}
+      SEED_ADMIN_NOME: ${SEED_ADMIN_NOME}
+      SYSLOG_SERVER: ${SYSLOG_SERVER}
+      SYSLOG_PROTOCOL: ${SYSLOG_PROTOCOL:-tcp}
+      SYSLOG_APP_NAME: ${SYSLOG_APP_NAME:-basis-avalia}
+      S3_ENDPOINT: http://minio:8000
+      S3_BUCKET: ${S3_BUCKET}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      SMTP_HOST: mailpit
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_TLS: ${SMTP_TLS:-false}
+      RELE_HABILITADO: ${RELE_HABILITADO:-true}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+      mailpit:
+        condition: service_healthy
+    healthcheck:
+      # Porta administrativa (design.md §4.5, §16 T-100) — nunca publicada
+      # no host, só alcançável de dentro da rede do compose.
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:9090/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      APP_ENV: development
+      NEXT_PUBLIC_APP_ENV: development
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 40s
+
+  # ── Stack isolada para o E2E (Playwright) — nunca aponta para o banco de
+  # desenvolvimento, e nunca o mesmo banco do serviço "test" (Go): o seed
+  # do E2E cria dado de referência estável (instituições, usuários fixos)
+  # que não é limpo entre execuções e contaminaria invariantes globais dos
+  # testes de integração Go (ex: AS-06, "último administrador do sistema"
+  # falhando porque o admin seedado do E2E conta como sobra). Banco
+  # próprio: DATABASE_URL_E2E. Sem porta publicada no host (só a rede
+  # interna do compose importa).
+  migrate-e2e:
+    image: migrate/migrate:latest
+    volumes:
+      - ./backend/internal/adapter/postgres/migrations:/migrations
+    command: ["-path", "/migrations", "-database", "${DATABASE_URL_E2E}", "up"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  seed-e2e:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - /app/tmp
+    environment:
+      APP_ENV: development
+      DATABASE_URL: ${DATABASE_URL_E2E}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL}
+      SEED_ADMIN_SENHA: ${SEED_ADMIN_SENHA}
+      SEED_ADMIN_NOME: ${SEED_ADMIN_NOME}
+    depends_on:
+      migrate-e2e:
+        condition: service_completed_successfully
+    command: ["go", "run", "./cmd/seed"]
+    restart: "no"
+
+  # Build de produção (Dockerfile multi-stage, binário fixo via COPY — sem
+  # volume de código, sem `air`), pelo mesmo motivo já registrado no
+  # `frontend-e2e` abaixo: E2E testa o que vai para produção, não o que
+  # está sendo editado. Investigado com o systematic-debugging: o serviço
+  # usava Dockerfile.dev + `air` com `/app/tmp` como volume anônimo; um
+  # `docker exec -u root` de depuração (fora deste agente) alterou o dono
+  # de `/app/tmp` para root entre o build inicial e o primeiro rebuild
+  # disparado por uma edição ao vivo do dev-fullstack — a partir daí todo
+  # rebuild falhava com "permission denied" e o binário antigo era
+  # removido sem substituto (`/bin/sh: /app/tmp/server: not found`, exit
+  # 127), deixando o healthcheck preso em unhealthy. Nada no Dockerfile.dev
+  # ou no docker-compose reafirma o dono do volume depois do primeiro
+  # build — qualquer escrita como root ali (manual ou não) trava o serviço
+  # permanentemente até intervenção manual. Rodar a imagem de produção
+  # elimina a classe inteira do problema (sem volume anônimo, sem `air`) e
+  # também remove a recompilação no meio de uma execução de E2E causada
+  # por alguém salvando um arquivo em backend/ durante o teste.
+  backend-e2e:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3011:3001"
+    environment:
+      APP_ENV: development
+      APP_VERSION: ${APP_VERSION:-0.0.0-dev}
+      PORT: "3001"
+      ADMIN_PORT: "9090"
+      DATABASE_URL: ${DATABASE_URL_E2E}
+      REDIS_URL: ${REDIS_URL}
+      # O cookie de sessão nasce Secure em qualquer ambiente (decisão
+      # inegociável, ver auth_handler.go) — só é aceito pelo navegador em
+      # contexto seguro. "localhost" é a exceção nativa do Chromium para
+      # isso sem precisar de TLS, então o Playwright acessa por
+      # localhost:3010/3011 (publicados no host) em vez do nome do serviço
+      # do compose — ver o serviço `playwright` com network_mode: host.
+      CORS_ALLOWED_ORIGINS: http://localhost:3010
+      JWT_SECRET: ${JWT_SECRET}
+      ARGON2_CONCORRENCIA: ${ARGON2_CONCORRENCIA:-4}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL}
+      SEED_ADMIN_SENHA: ${SEED_ADMIN_SENHA}
+      SEED_ADMIN_NOME: ${SEED_ADMIN_NOME}
+      S3_ENDPOINT: http://minio:8000
+      S3_BUCKET: ${S3_BUCKET}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      SMTP_HOST: mailpit
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_TLS: ${SMTP_TLS:-false}
+      RELE_HABILITADO: ${RELE_HABILITADO:-true}
+    depends_on:
+      seed-e2e:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+      mailpit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:9090/healthz"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  # Build de produção, nunca `next dev`: o cliente de HMR do modo dev tenta
+  # abrir um WebSocket que falha no handshake atrás do nome de serviço do
+  # compose (o navegador do Playwright acessa por "frontend-e2e", não
+  # "localhost") — investigado com o systematic-debugging: a falha repetida
+  # de handshake disparava um recarregamento/reinicialização do cliente do
+  # Next no meio da hidratação, e é isso que derrubava a interação com
+  # qualquer parte da tela (não só o combo) nos primeiros testes E2E. Rodar
+  # a build de produção elimina o WebSocket inteiro e também é mais fiel ao
+  # que vai para produção.
+  frontend-e2e:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3010:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      APP_ENV: development
+      NEXT_PUBLIC_APP_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3011/api/v1
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+    entrypoint: []
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        npm install
+        npm run build
+        cp -r .next/static .next/standalone/.next/static
+        [ -d public ] && cp -r public .next/standalone/public
+        node .next/standalone/server.js
+    depends_on:
+      backend-e2e:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  # Roda só quando RUN_TESTS=true — mesma separação "migration vs teste" do
+  # serviço `test` do backend (CLAUDE.md). Imagem oficial com Chromium e
+  # dependências de sistema já instaladas — o container `frontend` normal
+  # não tem essas bibliotecas e não tem root para instalá-las.
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.55.0-jammy
+    # A imagem roda como root por padrão — sem isto, `npm install` e a
+    # própria suíte criam node_modules/package-lock.json/test-results como
+    # root no volume montado (./e2e), e o desenvolvedor não consegue mais
+    # editar nem apagar esses arquivos sem sudo. "pwuser" (uid/gid 1000) já
+    # vem definido na imagem e coincide com o uid do desenvolvedor no host
+    # — mesma solução já usada em backend/Dockerfile.dev e
+    # frontend/Dockerfile.dev.
+    user: "1000:1000"
+    working_dir: /e2e
+    # network_mode: host — não pelo nome do serviço do compose. O cookie de
+    # sessão é Secure em qualquer ambiente (decisão inegociável); o
+    # Chromium só aceita cookie Secure em contexto seguro, e "localhost" é
+    # a única exceção nativa a isso sem TLS. frontend-e2e/backend-e2e
+    # publicam suas portas no host (3010/3011) só para isto — comprovado
+    # via systematic-debugging: o login devolvia 200 e Set-Cookie correto,
+    # mas o cookie nunca era gravado pelo navegador ao acessar por
+    # "http://backend-e2e:3001" (origem insegura, não-localhost).
+    network_mode: host
+    volumes:
+      - ./e2e:/e2e
+    environment:
+      RUN_TESTS: ${RUN_TESTS:-false}
+      BASE_URL: http://localhost:3010
+      API_URL: http://localhost:3011/api/v1
+    depends_on:
+      frontend-e2e:
+        condition: service_healthy
+      backend-e2e:
+        condition: service_healthy
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        if [ "$$RUN_TESTS" = "true" ]; then
+          npm install && npx playwright test
+        else
+          echo "RUN_TESTS=false — E2E pulados"
+        fi
+    restart: "no"
+
+volumes:
+  postgres_dev_data:
+  minio_dev_data:
+  minio_dev_metadata:
