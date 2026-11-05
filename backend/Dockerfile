@@ -1,7 +1,7 @@
 # Dockerfile de produção — backend Go + Gin
 # Build multi-stage: imagem final sem toolchain Go, só o binário compilado.
 
-FROM golang:1.26-alpine AS builder
+FROM golang:1.27-alpine AS builder
 WORKDIR /app
 # Copiar go.mod e go.sum primeiro para aproveitar cache de layer quando
 # só o código mudar (sem alteração de dependências).
