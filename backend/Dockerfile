@@ -10,7 +10,7 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -o /server ./cmd/api
 
-FROM alpine:3.20 AS runner
+FROM alpine:3.24 AS runner
 WORKDIR /app
 # Certificados TLS para chamadas HTTPS externas e fuso horário correto
 RUN apk --no-cache add ca-certificates tzdata
