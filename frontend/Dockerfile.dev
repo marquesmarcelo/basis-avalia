@@ -3,7 +3,7 @@
 # O código entra via volume montado (./frontend:/app), não copiado aqui.
 # `next dev` já tem HMR nativo — não precisa de watcher externo.
 
-FROM node:22-alpine
+FROM node:26-alpine
 WORKDIR /app
 # Pré-criar os diretórios que viram volume anônimo (node_modules, .next) e
 # ajustar dono para "node" (uid/gid 1000) ANTES de trocar de usuário — um
